@@ -4,6 +4,8 @@ backend
     - 数据库：mysql
     - 缓存：redis
     - 部署：
+        - 目前使用简单的 shell 脚本部署配合 supervisor 部署
+        - 前置 nginx
 desk
     - electron
     - vite + vue3.5

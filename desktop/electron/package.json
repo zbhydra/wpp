@@ -7,8 +7,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/main/index.ts",
-    "build": "tsc",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -16,8 +17,11 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.9",
+    "@vitejs/plugin-vue": "catalog:",
     "electron-builder": "^25.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.9.3"
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vite": "catalog:",
+    "vue": "catalog:"
   }
 }
