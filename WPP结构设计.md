@@ -9,7 +9,7 @@ desk
     - vite + vue3.5
     - https://github.com/vbenjs/vue-vben-admin
 admin
-    - electron
+    - electron （ 需要支持win7？ ）
     - vite + vue3.5
     - https://github.com/vbenjs/vue-vben-admin
 docs 文档
@@ -22,11 +22,20 @@ docs 文档
 
 
 ## 后端考虑点
+- 复用 hsmaster 相关组件
 
 ### Redis 是否持久化
+
+
 ### Redis 故障处理
+- 整个服务不可用
+
 ### nginx 做基于 ip 的限流
+
+
 ### 如何部署
+- 
+
 ### 如何重启
 
 
