@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist/preload",
-    "rootDir": "src/preload",
+    "rootDir": "src",
     "lib": ["DOM", "ESNext"],
     "target": "ESNext",
     "module": "CommonJS",

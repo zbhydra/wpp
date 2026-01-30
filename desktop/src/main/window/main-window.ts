@@ -1,6 +1,7 @@
 import { BrowserWindow, shell } from 'electron';
 import { join } from 'path';
 import { is } from '@electron-toolkit/utils';
+import { IPC_CHANNELS } from '../../shared/constants/ipc-channels';
 
 export class MainWindow {
   private window: BrowserWindow | null = null;
@@ -32,11 +33,11 @@ export class MainWindow {
 
     // 监听窗口最大化/还原事件，通知渲染进程
     this.window.on('maximize', () => {
-      this.window?.webContents.send('window:maximized-changed', true);
+      this.window?.webContents.send(IPC_CHANNELS.WINDOW.MAXIMIZED_CHANGED, true);
     });
 
     this.window.on('unmaximize', () => {
-      this.window?.webContents.send('window:maximized-changed', false);
+      this.window?.webContents.send(IPC_CHANNELS.WINDOW.MAXIMIZED_CHANGED, false);
     });
 
     // 外部链接用浏览器打开

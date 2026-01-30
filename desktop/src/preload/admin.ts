@@ -1,4 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { IPC_CHANNELS } from '../shared/constants/ipc-channels';
+import type { WindowAPI } from '../shared/types/api';
 
 /**
  * Admin UI Preload Script
@@ -6,21 +8,21 @@ import { contextBridge, ipcRenderer } from 'electron';
  */
 
 // 窗口控制 API
-const windowAPI = {
-  minimize: (): void => ipcRenderer.send('window:minimize'),
-  maximize: (): void => ipcRenderer.send('window:maximize'),
-  close: (): void => ipcRenderer.send('window:close'),
-  isMaximized: (): Promise<boolean> => ipcRenderer.invoke('window:isMaximized'),
+const windowAPI: WindowAPI = {
+  minimize: (): void => ipcRenderer.send(IPC_CHANNELS.WINDOW.MINIMIZE),
+  maximize: (): void => ipcRenderer.send(IPC_CHANNELS.WINDOW.MAXIMIZE),
+  close: (): void => ipcRenderer.send(IPC_CHANNELS.WINDOW.CLOSE),
+  isMaximized: (): Promise<boolean> => ipcRenderer.invoke(IPC_CHANNELS.WINDOW.IS_MAXIMIZED),
   
   // 监听窗口最大化状态变化
   onMaximizedChange: (callback: (isMaximized: boolean) => void): (() => void) => {
     const handler = (_event: Electron.IpcRendererEvent, isMaximized: boolean): void => {
       callback(isMaximized);
     };
-    ipcRenderer.on('window:maximized-changed', handler);
+    ipcRenderer.on(IPC_CHANNELS.WINDOW.MAXIMIZED_CHANGED, handler);
     // 返回取消订阅函数
     return (): void => {
-      ipcRenderer.removeListener('window:maximized-changed', handler);
+      ipcRenderer.removeListener(IPC_CHANNELS.WINDOW.MAXIMIZED_CHANGED, handler);
     };
   },
 };

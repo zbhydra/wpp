@@ -1,39 +1,12 @@
-import { app, BrowserWindow } from 'electron';
-import { electronApp, optimizer } from '@electron-toolkit/utils';
-import { MainWindow } from './window/main-window';
-import { registerWindowIpcHandlers } from './ipc';
+import { app } from 'electron';
+import { Application } from './application';
 
-let mainWindow: MainWindow | null = null;
-
-function initialize(): void {
-  // 注册 IPC 处理器
-  registerWindowIpcHandlers();
-
-  // 设置 Electron 应用默认行为
-  electronApp.setAppUserModelId('com.wpp.desktop');
-
-  // 开发环境中默认用 F12 打开开发者工具
-  app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window);
-  });
-
-  mainWindow = new MainWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      mainWindow = new MainWindow();
-    } else {
-      mainWindow?.focus();
-    }
-  });
-}
-
+/**
+ * 应用入口
+ * 
+ * 职责：仅负责启动 Application 单例
+ * 所有业务逻辑都在 Application 类中管理
+ */
 app.whenReady().then(() => {
-  initialize();
-});
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  Application.getInstance().bootstrap();
 });

@@ -70,7 +70,7 @@ onMounted(async () => {
     isMaximized.value = await window.electronAPI.window.isMaximized();
     
     // 监听最大化状态变化
-    unsubscribe = window.electronAPI.window.onMaximizedChange((maximized) => {
+    unsubscribe = window.electronAPI.window.onMaximizedChange((maximized: boolean) => {
       isMaximized.value = maximized;
     });
   }

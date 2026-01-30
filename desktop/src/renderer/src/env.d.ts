@@ -10,28 +10,9 @@ declare module '*.vue' {
  * Electron API 类型定义
  * 与 preload/admin.ts 中暴露的 API 保持一致
  */
-interface ElectronWindowAPI {
-  minimize: () => void;
-  maximize: () => void;
-  close: () => void;
-  isMaximized: () => Promise<boolean>;
-  onMaximizedChange: (callback: (isMaximized: boolean) => void) => () => void;
-}
-
-interface ElectronVersions {
-  node: string;
-  chrome: string;
-  electron: string;
-}
-
-interface ElectronAPI {
-  window: ElectronWindowAPI;
-  versions: ElectronVersions;
-}
-
 declare global {
   interface Window {
-    electronAPI: ElectronAPI;
+    electronAPI: import('../shared/types/api').ElectronAPI;
   }
 }
 
