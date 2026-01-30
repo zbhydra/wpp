@@ -1,38 +1,31 @@
 import { app, BrowserWindow } from 'electron';
-import { join } from 'path';
+import { electronApp, optimizer } from '@electron-toolkit/utils';
+import { MainWindow } from './window/main-window';
 
-function createWindow(): void {
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    show: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: join(__dirname, '../preload/admin.js'),
-      sandbox: false,
-    },
+let mainWindow: MainWindow | null = null;
+
+function initialize(): void {
+  // 设置 Electron 应用默认行为
+  electronApp.setAppUserModelId('com.wpp.desktop');
+
+  // 开发环境中默认用 F12 打开开发者工具
+  app.on('browser-window-created', (_, window) => {
+    optimizer.watchWindowShortcuts(window);
   });
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show();
-  });
-
-  // 开发模式加载本地服务器，生产模式加载打包后的文件
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] || 'http://localhost:5173');
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
-  }
-}
-
-app.whenReady().then(() => {
-  createWindow();
+  mainWindow = new MainWindow();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+      mainWindow = new MainWindow();
+    } else {
+      mainWindow?.focus();
     }
   });
+}
+
+app.whenReady().then(() => {
+  initialize();
 });
 
 app.on('window-all-closed', () => {
