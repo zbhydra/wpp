@@ -1,0 +1,39 @@
+appId: com.yourcompany.wpp-manager
+productName: WPP Manager
+directories:
+  output: dist/release
+  buildResources: src/assets
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!*.map"
+  - "!**/*.ts"
+  - "dist/electron/**/*"
+  - "package.json"
+asarUnpack:
+  - "**/node_modules/@wppconnect-team/wppconnect/**/*"
+
+mac:
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  icon: src/assets/icons/icon.icns
+
+win:
+  target:
+    - target: nsis
+  icon: src/assets/icons/icon.ico
+
+linux:
+  target:
+    - target: AppImage
+    - target: deb
+  icon: src/assets/icons
+  category: Network

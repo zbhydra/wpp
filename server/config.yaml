@@ -1,0 +1,63 @@
+app:
+  name: "tg-download-server"
+  version: "0.1.0"
+  host: "0.0.0.0"
+  port: 9680
+  debug: true
+  env: "dev"
+
+database:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "hydra110"
+  database: "tg_download"
+  pool_size: 20
+  max_overflow: 40
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  db: 0
+  password: null
+  pool_size: 5000
+  pool_timeout: 5
+  key_prefix: "tg-download"
+  socket_timeout: 5
+  socket_connect_timeout: 5
+  retry_on_timeout: true
+  retry_attempts: 3
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "log/app.log"
+
+api:
+  title: "tg-download-api"
+  description: "API for tg-download application"
+  version: "0.1.0"
+  docs_url: "/docs"
+  redoc_url: "/redoc"
+
+auth:
+  jwt_secret_key: "abcabcss$%^&*()_+"
+  jwt_algorithm: "HS256"
+  access_token_expire: 86400
+  refresh_token_expire: 604800
+  refresh_token_remember_days: 30
+  max_login_attempts: 5
+  lock_duration_minutes: 30
+  rate_limit_times: 10
+  rate_limit_period: 60
+
+smtp:
+  host: "smtp.resend.com"
+  port: 587
+  username: "resend"
+  password: "re_MwcizBgw_JMcxtWYhR9YesuqSahszEw5u"
+  use_tls: true
+  from_email: "validation@validation.hydrai.cc"
+  from_name: "TG Download"
+  timeout: 5
+  

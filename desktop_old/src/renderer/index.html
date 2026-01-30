@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:* ws://localhost:* https://web.whatsapp.com https://*.whatsapp.net; img-src 'self' data: blob: https:; font-src 'self' data:; object-src 'none'; frame-src 'self' https://web.whatsapp.com;">
+    <title>WhatsApp Multi-Account Manager</title>
+    <script>
+      // 全局调试开关（从 preload 传入，与主进程同步）
+      let DEBUG_MODE = false;
+      // 等待 electronAPI 准备好后获取调试开关
+      if (window.electronAPI?.DEBUG_MODE !== undefined) {
+        DEBUG_MODE = window.electronAPI.DEBUG_MODE;
+      }
+
+      // 安全的 performance.measure，自动检查 mark 是否存在
+      function safeMeasure(measureName, startMark, endMark) {
+        try {
+          if (performance.getEntriesByName(startMark).length > 0 &&
+              (!endMark || performance.getEntriesByName(endMark).length > 0)) {
+            performance.measure(measureName, startMark, endMark);
+          }
+        } catch (e) {
+          // 忽略错误
+        }
+      }
+
+      // 最早的性能标记 - 在 HTML 解析开始时
+      window.__PERF = {
+        start: Date.now(),
+        marks: {},
+        log: function(name, extra) {
+          if (!DEBUG_MODE) return;
+          const now = Date.now();
+          const elapsed = now - this.start;
+          this.marks[name] = now;
+          const msg = extra ? `[PERF] ${name}: +${elapsed}ms ${extra}` : `[PERF] ${name}: +${elapsed}ms`;
+          console.log(msg);
+          return now;
+        },
+        logSince: function(name, since) {
+          if (!DEBUG_MODE) return;
+          const now = Date.now();
+          const elapsed = now - this.marks[since];
+          console.log(`[PERF] ✓ ${name} (since ${since}): ${elapsed}ms`);
+          return now;
+        }
+      };
+      window.__PERF.log('HTML_head_start');
+
+      // 追踪 V8 引擎初始化
+      if (DEBUG_MODE && window.performance && window.performance.memory) {
+        const observer = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          entries.forEach((entry) => {
+            if (entry.entryType === 'measure') {
+              console.log('[Measure]', entry.name, entry.duration.toFixed(2) + 'ms');
+            }
+          });
+        });
+        observer.observe({ entryTypes: ['measure'] });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.__PERF.log('HTML_body_start');
+      safeMeasure('html-body-parsing', 'HTML_head_start');
+    </script>
+
+    <!-- 追踪脚本加载准备 -->
+    <script>
+      window.__PERF.log('before_any_scripts');
+      // 监听 DOMContentLoaded
+      window.addEventListener('DOMContentLoaded', () => {
+        window.__PERF.log('DOMContentLoaded_event_fired');
+        safeMeasure('dom-content-loaded', 'HTML_head_start');
+      });
+    </script>
+
+    <script>
+      window.__PERF.log('before_main_ts_tag');
+      // 在模块脚本之前记录时间
+      const beforeModuleScript = performance.now();
+    </script>
+    <script type="module" src="./main.ts"></script>
+    <script>
+      window.__PERF.logSince('after_main_ts_tag', 'before_main_ts_tag');
+      const afterModuleScriptTag = performance.now();
+      safeMeasure('module-script-tag-parsed', 'before_main_ts_tag');
+
+      // 这个脚本会立即执行，但要在 main.ts 开始执行后才继续
+      // 此时我们不知道模块是否已经开始加载
+    </script>
+
+    <!-- 追踪脚本加载后的情况 -->
+    <script>
+      window.__PERF.log('after_inline_scripts');
+      safeMeasure('inline-scripts-executed', 'HTML_head_start');
+
+      // 极细粒度的轮询检查
+      let checkCount = 0;
+      let lastCheckTime = Date.now();
+
+      const checkInterval = setInterval(() => {
+        checkCount++;
+        const now = Date.now();
+        const elapsed = now - lastCheckTime;
+
+        if (window.__RENDERER_STARTED) {
+          window.__PERF.log('renderer_detected_after', `check #${checkCount} (+${now - window.__PERF.start}ms)`);
+          safeMeasure('renderer-to-first-execution', 'after_main_ts_tag');
+          clearInterval(checkInterval);
+
+          // 一旦检测到 renderer 开始，继续追踪 Vue 相关性能
+          setTimeout(() => {
+            if (window.__VUE_MOUNTED) {
+              window.__PERF.logSince('vue_mounted_detected', 'renderer_detected_after');
+            }
+          }, 100);
+        } else if (checkCount > 200) {
+          // 10秒后停止检查（200 * 50ms = 10000ms）
+          clearInterval(checkInterval);
+          window.__PERF.log('renderer_not_detected', 'gave up after ' + checkCount + ' checks');
+        }
+
+        // 每 500ms 输出一次心跳
+        if (DEBUG_MODE && checkCount % 10 === 0) {
+          console.log(`[Polling] Waiting for renderer... check #${checkCount} (+${now - window.__PERF.start}ms)`);
+        }
+
+        lastCheckTime = now;
+      }, 50);
+
+      // 追踪 window load 事件
+      window.addEventListener('load', () => {
+        window.__PERF.log('window_load_event_fired');
+        safeMeasure('window-load-complete', 'HTML_head_start');
+
+        // 在 load 后立即获取所有性能指标
+        setTimeout(() => {
+          if (DEBUG_MODE && window.performance && window.performance.getEntriesByType) {
+            const navigation = performance.getEntriesByType('navigation')[0];
+            console.log('=== Navigation Timing Detail ===');
+            console.log('navigationStart:', navigation.startTime);
+            console.log('redirectStart:', navigation.redirectStart, '(redirect duration:', navigation.redirectDuration + 'ms)');
+            console.log('fetchStart:', navigation.fetchStart, '(fetch duration:', navigation.fetchDuration + 'ms)');
+            console.log('domainLookupStart:', navigation.domainLookupStart, '(DNS duration:', navigation.domainLookupEnd - navigation.domainLookupStart + 'ms)');
+            console.log('connectStart:', navigation.connectStart, '(TCP duration:', navigation.connectEnd - navigation.connectStart + 'ms)');
+            console.log('requestStart:', navigation.requestStart, '(request duration:', navigation.responseEnd - navigation.requestStart + 'ms)');
+            console.log('responseStart:', navigation.responseStart, '(TTFB:', navigation.responseStart - navigation.requestStart + 'ms)');
+            console.log('domInteractive:', navigation.domInteractive, '(domInteractive:', navigation.domInteractive - navigation.startTime + 'ms)');
+            console.log('domContentLoadedEventStart:', navigation.domContentLoadedEventStart, '(domContentLoadedEventStart:', navigation.domContentLoadedEventStart - navigation.startTime + 'ms)');
+            console.log('domComplete:', navigation.domComplete, '(domComplete:', navigation.domComplete - navigation.startTime + 'ms)');
+            console.log('loadEventStart:', navigation.loadEventStart, '(loadEventStart:', navigation.loadEventStart - navigation.startTime + 'ms)');
+          }
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
