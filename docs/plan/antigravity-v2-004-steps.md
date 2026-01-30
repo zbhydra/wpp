@@ -50,8 +50,8 @@ pnpm add vue vue-router pinia
 
 ### 1.3 验证标准
 
-- [ ] `desktop/package.json` 存在
-- [ ] 可以运行 `pnpm install` 无报错
+- [x] `desktop/package.json` 存在
+- [x] 可以运行 `pnpm install` 无报错
 
 ---
 
@@ -75,8 +75,8 @@ desktop/
 
 ### 2.3 验证标准
 
-- [ ] TypeScript 编译无错误
-- [ ] `pnpm run dev` 可以启动（空窗口也算成功）
+- [x] TypeScript 编译无错误
+- [x] `pnpm run dev` 可以启动（空窗口也算成功）
 
 ---
 
@@ -344,8 +344,8 @@ pnpm run build:win
 
 | Step | 名称 | 状态 |
 |------|------|------|
-| 1 | 项目初始化 | [ ] |
-| 2 | 创建项目配置文件 | [ ] |
+| 1 | 项目初始化 | [x] |
+| 2 | 创建项目配置文件 | [x] |
 | 3 | 创建 Main Process 骨架 | [ ] |
 | 4 | 创建 Admin Preload | [ ] |
 | 5 | 创建 Renderer 骨架 | [ ] |

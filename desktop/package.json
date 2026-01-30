@@ -1,0 +1,39 @@
+{
+  "name": "wpp-desktop",
+  "version": "1.0.0",
+  "description": "WPP Desktop - WhatsApp Multi-Account Manager",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "ELECTRON_RUN_AS_NODE= electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "build:win": "pnpm run build && electron-builder --win",
+    "build:mac": "pnpm run build && electron-builder --mac",
+    "build:mac:arm": "pnpm run build && electron-builder --mac --arm64",
+    "build:mac:x64": "pnpm run build && electron-builder --mac --x64",
+    "build:linux": "pnpm run build && electron-builder --linux",
+    "typecheck": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.preload.json && vue-tsc --noEmit -p tsconfig.renderer.json"
+  },
+  "keywords": [
+    "electron",
+    "whatsapp",
+    "vue",
+    "vben"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.3",
+    "electron": "^40.1.0",
+    "electron-builder": "^26.4.0",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vue-tsc": "^3.2.4"
+  },
+  "dependencies": {
+    "pinia": "^3.0.4",
+    "vue": "^3.5.27",
+    "vue-router": "^5.0.0"
+  }
+}

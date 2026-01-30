@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist/preload",
+    "rootDir": "src/preload",
+    "lib": ["DOM", "ESNext"],
+    "target": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "paths": {
+      "@preload/*": ["src/preload/*"],
+      "@shared/*": ["src/shared/*"]
+    }
+  },
+  "include": ["src/preload/**/*.ts", "src/shared/**/*.ts"]
+}

@@ -1,0 +1,37 @@
+appId: com.wpp.desktop
+productName: WPP Desktop
+directories:
+  output: dist/release
+  buildResources: resources
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!*.map"
+  - "!**/*.ts"
+  - "dist/**/*"
+  - "package.json"
+
+mac:
+  category: public.app-category.productivity
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  icon: resources/icon.icns
+
+win:
+  target:
+    - target: nsis
+  icon: resources/icon.ico
+
+linux:
+  target:
+    - target: AppImage
+    - target: deb
+  icon: resources
+  category: Network
