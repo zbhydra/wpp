@@ -1,0 +1,2 @@
+chrome-devtools
+web-search
