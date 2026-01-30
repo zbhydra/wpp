@@ -1,10 +1,14 @@
 import { app, BrowserWindow } from 'electron';
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { MainWindow } from './window/main-window';
+import { registerWindowIpcHandlers } from './ipc';
 
 let mainWindow: MainWindow | null = null;
 
 function initialize(): void {
+  // 注册 IPC 处理器
+  registerWindowIpcHandlers();
+
   // 设置 Electron 应用默认行为
   electronApp.setAppUserModelId('com.wpp.desktop');
 

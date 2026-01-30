@@ -118,8 +118,8 @@ desktop/src/preload/
 
 ### 4.3 验证标准
 
-- [ ] `window.electronAPI` 在渲染进程可访问
-- [ ] 窗口控制 API 可用 (minimize/maximize/close)
+- [x] `window.electronAPI` 在渲染进程可访问
+- [x] 窗口控制 API 可用 (minimize/maximize/close)
 
 ---
 
@@ -142,9 +142,9 @@ desktop/src/renderer/
 
 ### 5.3 验证标准
 
-- [ ] 启动后显示 "Hello Desktop" 页面
-- [ ] Vue DevTools 可工作
-- [ ] 热重载工作正常
+- [x] 启动后显示 "Hello Desktop" 页面
+- [x] Vue DevTools 可工作
+- [x] 热重载工作正常
 
 ---
 
@@ -349,8 +349,8 @@ pnpm run build:win
 | 1 | 项目初始化 | [x] |
 | 2 | 创建项目配置文件 | [x] |
 | 3 | 创建 Main Process 骨架 | [x] |
-| 4 | 创建 Admin Preload | [ ] |
-| 5 | 创建 Renderer 骨架 | [ ] |
+| 4 | 创建 Admin Preload | [x] |
+| 5 | 创建 Renderer 骨架 | [x] |
 | 6 | 集成 Vben Admin | [ ] |
 | 7 | 创建 Tab Bar | [ ] |
 | 8 | 创建 Tab Manager | [ ] |

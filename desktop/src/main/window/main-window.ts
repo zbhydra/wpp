@@ -30,6 +30,15 @@ export class MainWindow {
       this.window?.show();
     });
 
+    // 监听窗口最大化/还原事件，通知渲染进程
+    this.window.on('maximize', () => {
+      this.window?.webContents.send('window:maximized-changed', true);
+    });
+
+    this.window.on('unmaximize', () => {
+      this.window?.webContents.send('window:maximized-changed', false);
+    });
+
     // 外部链接用浏览器打开
     this.window.webContents.setWindowOpenHandler((details) => {
       shell.openExternal(details.url);
